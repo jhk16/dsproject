@@ -1,0 +1,10 @@
+#!/bin/bash
+
+./redis-5.0.5/src/redis-benchmark -t set -n 1000000 -r 500000 -d 4096
+
+sudo sh -c "echo 1 > /proc/sys/vm/drop_caches && swapoff -a && swapon -a && printf '\n%s\n' 'Ram-cache and Swap Cleared'"
+
+./redis-5.0.5/src/redis-cli flushall
+
+sudo rm -rf *.rdb
+sudo killall redis-server

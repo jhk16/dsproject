@@ -1,0 +1,21 @@
+#!/bin/bash
+
+sudo sysctl vm.overcommit_memory=1
+sudo sh -c "echo never > /sys/kernel/mm/transparent_hugepage/enabled"
+
+./redis-5.0.5/src/redis-server ./redis-5.0.5/redis-cluster01.conf &
+./redis-5.0.5/src/redis-server ./redis-5.0.5/redis-cluster02.conf & 
+./redis-5.0.5/src/redis-server ./redis-5.0.5/redis-cluster03.conf &
+./redis-5.0.5/src/redis-server ./redis-5.0.5/redis-slave01.conf &
+./redis-5.0.5/src/redis-server ./redis-5.0.5/redis-slave02.conf & 
+./redis-5.0.5/src/redis-server ./redis-5.0.5/redis-slave03.conf &
+
+
+./redis-5.0.5/src/redis-cli --cluster create \
+    127.0.0.1:6379 \
+    127.0.0.1:6380 \
+    127.0.0.1:6381 \
+    127.0.0.1:7379 \
+    127.0.0.1:7380 \
+    127.0.0.1:7381 \
+    --cluster-replicas 1
